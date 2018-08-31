@@ -13,11 +13,11 @@ public interface DanhMucNNKDRepository extends CrudRepository<DanhMucNNKD, Long>
 	
 	public List<DanhMucNNKD> findByTenDanhMuc(String tendanhmuc);
 	
+	public List<DanhMucNNKD> findByTenDanhMucContainingIgnoreCase(String tendanhmuc);
+	
 	public Page<DanhMucNNKD> findByTenDanhMuc(Pageable pageable);
 	
 	public Page<DanhMucNNKD> findByTenDanhMuc(String tendanhmuc, Pageable pageable);
-	
-	public Page<DanhMucNNKD> findByTenDanhMucContaining(String tendanhmuc, Pageable pageable);
 
 	public Page<DanhMucNNKD> findByTenDanhMucContainingIgnoreCase(String tendanhmuc, Pageable pageable);
 

@@ -92,9 +92,10 @@ public class DanhMucNNKDController {
 		}
 	}
 
-	////////////////////////////////////////////
+	////////////////////////////////////////////	
 	// GET DANH MUC NNKD WITH ALL PARAMETER
 	////////////////////////////////////////////
+	@SuppressWarnings("deprecation")
 	@GetMapping("/danhmucnnkds/")
 	public Page<DanhMucNNKD> getBuiHoaDanhMucNNKDs(@RequestParam(value = "keyword") String tendanhmuc,
 			@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
@@ -102,20 +103,24 @@ public class DanhMucNNKDController {
 			@RequestParam(value = "properties_sort") String properties_sort,
 			@RequestParam(value = "type_sort") String kieu) {
 		try {
-			System.out.println("Get paging DanhMucNNKDs Bui Hoa...");
-
-			// kiểm tra properties_sort ==> mặc định trả về id
-			properties_sort = (properties_sort.isEmpty() || properties_sort.toString() == "") ? "id" : properties_sort;
+			System.out.println("### Get paging DanhMucNNKDs Bui Hoa...");
+			
+			properties_sort = (properties_sort.isEmpty() || properties_sort.toString() == "") ? "id" : properties_sort; // kiểm tra properties_sort ==> mặc định trả về id
 
 			// Phan trang PAGEABLE va SORT
-			@SuppressWarnings("deprecation")
-			Pageable pageable = (kieu.equals("0"))
-					? new PageRequest(page - 1, pageSize, Sort.by(properties_sort).descending())
-					: new PageRequest(page - 1, pageSize, Sort.by(properties_sort).ascending());
+			Pageable pageable;
+			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending() : Sort.by(properties_sort).ascending();
+			
+			if(pageSize <= 0) { // Truong hợp đặc biệt
+				int lstSize = dmnnkdRepostory.findByTenDanhMucContainingIgnoreCase(tendanhmuc).size();
+				pageable = new PageRequest(page - 1, lstSize , sort);
+			} else {
+				pageable = new PageRequest(page - 1, pageSize , sort);
+			}
 
 			// tim kiem noi dung
 			Page<DanhMucNNKD> pagDanhMucNNKD;
-			if (!(tendanhmuc.equals("null"))) {
+			if (tendanhmuc != "") {
 				pagDanhMucNNKD = dmnnkdRepostory.findByTenDanhMucContainingIgnoreCase(tendanhmuc, pageable);
 			} else {
 				pagDanhMucNNKD = pagRepostory.findAll(pageable);
@@ -152,106 +157,6 @@ public class DanhMucNNKDController {
 		Iterable<DanhMucNNKD> DanhMucNNKDs = dmnnkdRepostory.findAll();
 		DanhMucNNKDs.forEach(list::add);
 		return list;
-	}
-	/*
-	// gets danhmuc NNKD
-	@GetMapping("/danhmucnnkds/Search/{tenDanhMuc}")
-	public List<DanhMucNNKD> getDanhMucNNKDTheoTenDaiLy(@PathVariable("tenDanhMuc") String tenDanhMuc) {
-		try {
-			List<DanhMucNNKD> daily = dmnnkdRepostory.findByTenDanhMuc(tenDanhMuc);
-
-			if (daily.size() > 0) {
-				return daily;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	// pagesize gets
-	@GetMapping("/danhmucnnkds/{pageNumber}/{pageSize}")
-	public Page<DanhMucNNKD> getAllDanhMucNNKDs(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize) {
-		try {
-
-			System.out.println("Get all paging DanhMucNNKDs...");
-			Pageable pageable = new PageRequest(pageNumber, pageSize);
-			Page<DanhMucNNKD> pagDanhMucNNKD = pagRepostory.findAll(pageable);
-			return pagDanhMucNNKD;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// sort properties (0 giam dan) pagesize gets
-	@GetMapping("/danhmucnnkds/{pageNumber}/{pageSize}/{properties_sort}/{kieu}")
-	public Page<DanhMucNNKD> getSAllDanhMucNNKDs(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu) {
-		try {
-
-			System.out.println("Get all paging DanhMucNNKDs...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-
-			Page<DanhMucNNKD> pagDanhMucNNKD = pagRepostory.findAll(pageable);
-
-			return pagDanhMucNNKD;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// search sort pagesize gets
-	@GetMapping("/danhmucnnkds/{pageNumber}/{pageSize}/{properties_sort}/{kieu}/{tendanhmuc}")
-	public Page<DanhMucNNKD> getSearchAllDanhMucNNKDs(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu, @PathVariable("tendanhmuc") String tendanhmuc) {
-		try {
-
-			System.out.println("Get all paging DanhMucNNKDs...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-			Page<DanhMucNNKD> pagDanhMucNNKD;
-			if (!(tendanhmuc.equals("null"))) {
-				pagDanhMucNNKD = dmnnkdRepostory.findByTenDanhMuc(tendanhmuc, pageable);
-			} else {
-				// pagDanhMucNNKD = dmnnkdRepostory.findByTenDaiLy(pageable);
-				pagDanhMucNNKD = pagRepostory.findAll(pageable);
-			}
-			return pagDanhMucNNKD;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-	
-*/
-	/* =============GEN DANH MUC NNKD EXAMPLE============== */
-
-	@GetMapping("/danhmucnnkds/gendanhmuc")
-	public String genDanhMuc() {
-		System.out.println("Gen Danh Muc DanhMucNNKD");
-		for (Integer i = 1; i < 1000; i++) {
-			DanhMucNNKD nnkd = new DanhMucNNKD();
-			System.out.println("DanhMucNNKD with ID = " + i);
-			nnkd.setTenDanhMuc("danh mục " + String.valueOf(i) + "!!!");
-			dmnnkdRepostory.save(nnkd);
-		}
-		return "OK";
-	}
+	}	
 
 }

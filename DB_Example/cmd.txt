@@ -1,0 +1,5 @@
+restore:
+"C:\Program Files\PostgreSQL\pg95\bin\psql.exe" -U postgres -h localhost csdl_sct < "D:\csdl_sct.bak"
+
+backup
+"C:\Program Files\PostgreSQL\pg95\bin\pg_dump.exe" -U postgres -h localhost csdl_sct > "C:\csdl_sct.bak"
