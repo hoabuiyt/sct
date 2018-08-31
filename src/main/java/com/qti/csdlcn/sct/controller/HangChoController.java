@@ -1,6 +1,5 @@
 package com.qti.csdlcn.sct.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -61,7 +60,7 @@ public class HangChoController {
 	// UPDATE BY ID
 	//////////////////
 	@PutMapping("/hangchos/{id}")
-	public ResponseEntity<?> updateHangCho(@PathVariable("id") Long id, @RequestBody HangCho hangCho) {
+	public ResponseEntity<?> updateHangChoById(@PathVariable("id") Long id, @RequestBody HangCho hangCho) {
 		System.out.println("Update HangCho with ID = " + id + "...");
 
 		Optional<HangCho> hangChoData = hangChoRepostory.findById(id);
@@ -80,7 +79,7 @@ public class HangChoController {
 	// DELETE BY ID
 	/////////////////
 	@DeleteMapping("/hangchos/{id}")
-	public ResponseEntity<?> deleteHangCho(@PathVariable("id") Long id) {
+	public ResponseEntity<?> deleteHangChoById(@PathVariable("id") Long id) {
 		System.out.println("Delete HangCho with ID = " + id + "...");
 
 		try {
@@ -88,6 +87,21 @@ public class HangChoController {
 			return new ResponseEntity<>(AppConstants.DELETE_SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(AppConstants.DELETE_FAILED, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	////////////////
+	// GET BY ID
+	////////////////
+	@GetMapping("/hangchos/{id}")
+	public ResponseEntity<HangCho> getHangChoById(@PathVariable("id") Long id) {
+		System.out.println("Get HangCho by id...");
+
+		Optional<HangCho> hangChoData = hangChoRepostory.findById(id);
+		if (hangChoData.isPresent()) {
+			return new ResponseEntity<>(hangChoData.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -128,122 +142,9 @@ public class HangChoController {
 
 	}
 
-	////////////////
-	// GET BY ID
-	////////////////
-	@GetMapping("/hangchos/{id}")
-	public ResponseEntity<HangCho> getHangCho(@PathVariable("id") Long id) {
-		System.out.println("Get HangCho by id...");
-
-		Optional<HangCho> hangChoData = hangChoRepostory.findById(id);
-		if (hangChoData.isPresent()) {
-			return new ResponseEntity<>(hangChoData.get(), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
-
-	// gets
-	@GetMapping("/hangchos")
-	public List<HangCho> getAllHangChosss() {
-		System.out.println("Get all HangChos...");
-		List<HangCho> list = new ArrayList<>();
-		Iterable<HangCho> HangChos = hangChoRepostory.findAll();
-		HangChos.forEach(list::add);
-		return list;
-	}
-
-	/*
-	// gets danhmuc NNKD
-	@GetMapping("/hangchos/Search/{TenHang}")
-	public List<HangCho> getHangChoTheoTenDaiLy(@PathVariable("TenHang") String TenHang) {
-		try {
-			List<HangCho> daily = hangChoRepostory.findByTenHang(TenHang);
-
-			if (daily.size() > 0) {
-				return daily;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	// pagesize gets
-	@GetMapping("/hangchos/{pageNumber}/{pageSize}")
-	public Page<HangCho> getAllHangChos(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize) {
-		try {
-
-			System.out.println("Get all paging HangChos...");
-			Pageable pageable = new PageRequest(pageNumber, pageSize);
-			Page<HangCho> pagHangCho = pagRepostory.findAll(pageable);
-			return pagHangCho;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// sort properties (0 giam dan) pagesize gets
-	@GetMapping("/hangchos/{pageNumber}/{pageSize}/{properties_sort}/{kieu}")
-	public Page<HangCho> getSAllHangChos(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu) {
-		try {
-
-			System.out.println("Get all paging HangChos...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-
-			Page<HangCho> pagHangCho = pagRepostory.findAll(pageable);
-
-			return pagHangCho;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// search sort pagesize gets
-	@GetMapping("/hangchos/{pageNumber}/{pageSize}/{properties_sort}/{kieu}/{TenHang}")
-	public Page<HangCho> getSearchAllHangChos(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu, @PathVariable("TenHang") String TenHang) {
-		try {
-
-			System.out.println("Get all paging HangChos...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-			Page<HangCho> pagHangCho;
-			if (!(TenHang.equals("null"))) {
-				pagHangCho = hangChoRepostory.findByTenHang(TenHang, pageable);
-			} else {
-				// pagHangCho = hangChoRepostory.findByTenDaiLy(pageable);
-				pagHangCho = pagRepostory.findAll(pageable);
-			}
-			return pagHangCho;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-	
-*/
 	/* =============GEN HANG CHo EXAMPLE============== */
-
 	@GetMapping("/hangchos/genhangcho")
-	public String genDanhMuc() {
+	public String genHangCho() {
 		System.out.println("Gen Danh Muc HangCho");
 		for (Integer i = 1; i < 10; i++) {
 			HangCho nnkd = new HangCho();

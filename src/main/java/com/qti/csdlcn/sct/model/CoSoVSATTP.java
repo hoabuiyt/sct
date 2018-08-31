@@ -3,12 +3,6 @@ package com.qti.csdlcn.sct.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 @Entity
 @Table(name = "attp_cosovsattp")
 public class CoSoVSATTP implements Serializable {

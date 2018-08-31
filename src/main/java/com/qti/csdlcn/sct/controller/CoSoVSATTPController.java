@@ -2,7 +2,6 @@ package com.qti.csdlcn.sct.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,15 +64,23 @@ public class CoSoVSATTPController {
 	// UPDATE BY ID
 	//////////////////
 	@PutMapping("/cosovsattps/{id}")
-	public ResponseEntity<?> updateCoSoVSATTP(@PathVariable("id") Long id,
-			@RequestBody CoSoVSATTP CoSoVSATTP) {
+	public ResponseEntity<?> updateCoSoVSATTPById(@PathVariable("id") Long id, @RequestBody CoSoVSATTP coSoVSATTP) {
 		System.out.println("Update CoSoVSATTP with ID = " + id + "...");
 
-		Optional<CoSoVSATTP> CoSoVSATTPData = csvsattpRepostory.findById(id);
-		if (CoSoVSATTPData.isPresent()) {
-			CoSoVSATTP savedCoSoVSATTP = CoSoVSATTPData.get();
-			savedCoSoVSATTP.setTenCoSo(CoSoVSATTP.getTenCoSo());
-			
+		Optional<CoSoVSATTP> coSoVSATTPData = csvsattpRepostory.findById(id);
+		if (coSoVSATTPData.isPresent()) {
+			CoSoVSATTP savedCoSoVSATTP = coSoVSATTPData.get();
+
+			savedCoSoVSATTP.setTenCoSo(coSoVSATTP.getTenCoSo());
+			savedCoSoVSATTP.setTenChuCoSo(coSoVSATTP.getTenChuCoSo());
+			savedCoSoVSATTP.setDiaChiCoSo(coSoVSATTP.getDiaChiCoSo());
+			savedCoSoVSATTP.setMaXa(coSoVSATTP.getMaXa());
+			savedCoSoVSATTP.setMaHuyen(coSoVSATTP.getMaHuyen());
+			savedCoSoVSATTP.setIdDanhMuc(coSoVSATTP.getIdDanhMuc());
+			savedCoSoVSATTP.setSoGiayCN(coSoVSATTP.getSoGiayCN());
+			savedCoSoVSATTP.setNgayCapCN(coSoVSATTP.getNgayCapCN());
+			savedCoSoVSATTP.setGhiChu(coSoVSATTP.getGhiChu());
+
 			csvsattpRepostory.save(savedCoSoVSATTP);
 			return new ResponseEntity<>(AppConstants.UPDATE_SUCCESS, HttpStatus.OK);
 		} else {
@@ -85,7 +92,7 @@ public class CoSoVSATTPController {
 	// DELETE BY ID
 	/////////////////
 	@DeleteMapping("/cosovsattps/{id}")
-	public ResponseEntity<?> deleteCoSoVSATTP(@PathVariable("id") Long id) {
+	public ResponseEntity<?> deleteCoSoVSATTPById(@PathVariable("id") Long id) {
 		System.out.println("Delete CoSoVSATTP with ID = " + id + "...");
 
 		try {
@@ -96,9 +103,25 @@ public class CoSoVSATTPController {
 		}
 	}
 
+	////////////////
+	// GET BY ID
+	////////////////
+	@GetMapping("/cosovsattps/{id}")
+	public ResponseEntity<CoSoVSATTP> getCoSoVSATTPById(@PathVariable("id") Long id) {
+		System.out.println("Get CoSoVSATTP by id...");
+
+		Optional<CoSoVSATTP> CoSoVSATTPData = csvsattpRepostory.findById(id);
+		if (CoSoVSATTPData.isPresent()) {
+			return new ResponseEntity<>(CoSoVSATTPData.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	////////////////////////////////////////////
 	// GET DANH MUC NNKD WITH ALL PARAMETER
 	////////////////////////////////////////////
+	@SuppressWarnings("deprecation")
 	@GetMapping("/cosovsattps/")
 	public Page<CoSoVSATTP> getBuiHoaCoSoVSATTPs(@RequestParam(value = "keyword") String keyWord,
 			@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
@@ -112,17 +135,21 @@ public class CoSoVSATTPController {
 			properties_sort = (properties_sort.isEmpty() || properties_sort.toString() == "") ? "id" : properties_sort;
 
 			// Phan trang PAGEABLE va SORT
-			@SuppressWarnings("deprecation")
-			Pageable pageable = (kieu.equals("0"))
-					? new PageRequest(page - 1, pageSize, Sort.by(properties_sort).descending())
-					: new PageRequest(page - 1, pageSize, Sort.by(properties_sort).ascending());
+			Pageable pageable;
+			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending()
+					: Sort.by(properties_sort).ascending();
+
+			if (pageSize <= 0) { // Truong hợp đặc biệt
+				int lstSize = csvsattpRepostory.findByTenCoSoContainingIgnoreCaseOrTenChuCoSoContainingIgnoreCase(
+						keyWord.toString(), keyWord.toString()).size();
+				pageable = new PageRequest(page - 1, lstSize, sort);
+			} else {
+				pageable = new PageRequest(page - 1, pageSize, sort);
+			}
 
 			// tim kiem noi dung
 			Page<CoSoVSATTP> pagCoSoVSATTP;
-			if (!(keyWord.equals("null"))) {
-				// pagCoSoVSATTP =
-				// csvsattpRepostory.findByTenCoSoOrTenChuCoSoContainingIgnoreCase(keyWord.toString(),
-				// keyWord.toString(), pageable);
+			if (keyWord != "") {
 				pagCoSoVSATTP = csvsattpRepostory.findByTenCoSoContainingIgnoreCaseOrTenChuCoSoContainingIgnoreCase(
 						keyWord.toString(), keyWord.toString(), pageable);
 			} else {
@@ -137,120 +164,9 @@ public class CoSoVSATTPController {
 
 	}
 
-	////////////////
-	// GET BY ID
-	////////////////
-	@GetMapping("/cosovsattps/{id}")
-	public ResponseEntity<CoSoVSATTP> getCoSoVSATTP(@PathVariable("id") Long id) {
-		System.out.println("Get CoSoVSATTP by id...");
-
-		Optional<CoSoVSATTP> CoSoVSATTPData = csvsattpRepostory.findById(id);
-		if (CoSoVSATTPData.isPresent()) {
-			return new ResponseEntity<>(CoSoVSATTPData.get(), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
-
-	// gets
-	@GetMapping("/cosovsattps")
-	public List<CoSoVSATTP> getAllCoSoVSATTPsss() {
-		System.out.println("Get all CoSoVSATTPs...");
-		List<CoSoVSATTP> list = new ArrayList<>();
-		Iterable<CoSoVSATTP> CoSoVSATTPs = csvsattpRepostory.findAll();
-		CoSoVSATTPs.forEach(list::add);
-		return list;
-	}
-	/*
-	// gets CoSo NNKD
-	@GetMapping("/cosovsattps/Search/{tenCoSo}")
-	public List<CoSoVSATTP> getCoSoVSATTPTheoTenDaiLy(@PathVariable("tenCoSo") String tenCoSo) {
-		try {
-			List<CoSoVSATTP> daily = csvsattpRepostory.findByTenCoSo(tenCoSo);
-
-			if (daily.size() > 0) {
-				return daily;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	// pagesize gets
-	@GetMapping("/cosovsattps/{pageNumber}/{pageSize}")
-	public Page<CoSoVSATTP> getAllCoSoVSATTPs(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize) {
-		try {
-
-			System.out.println("Get all paging CoSoVSATTPs...");
-			Pageable pageable = new PageRequest(pageNumber, pageSize);
-			Page<CoSoVSATTP> pagCoSoVSATTP = pagRepostory.findAll(pageable);
-			return pagCoSoVSATTP;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// sort properties (0 giam dan) pagesize gets
-	@GetMapping("/cosovsattps/{pageNumber}/{pageSize}/{properties_sort}/{kieu}")
-	public Page<CoSoVSATTP> getSAllCoSoVSATTPs(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu) {
-		try {
-
-			System.out.println("Get all paging CoSoVSATTPs...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-
-			Page<CoSoVSATTP> pagCoSoVSATTP = pagRepostory.findAll(pageable);
-
-			return pagCoSoVSATTP;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// search sort pagesize gets
-	@GetMapping("/cosovsattps/{pageNumber}/{pageSize}/{properties_sort}/{kieu}/{tenCoSo}")
-	public Page<CoSoVSATTP> getSearchAllCoSoVSATTPs(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu, @PathVariable("tenCoSo") String tenCoSo) {
-		try {
-
-			System.out.println("Get all paging CoSoVSATTPs...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-			Page<CoSoVSATTP> pagCoSoVSATTP;
-			if (!(tenCoSo.equals("null"))) {
-				pagCoSoVSATTP = csvsattpRepostory.findByTenCoSo(tenCoSo, pageable);
-			} else {
-				// pagCoSoVSATTP = csvsattpRepostory.findByTenDaiLy(pageable);
-				pagCoSoVSATTP = pagRepostory.findAll(pageable);
-			}
-			return pagCoSoVSATTP;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}*/
-
-	
 	/* =============GEN CO SO VS ATTP EXAMPLE============== */
 	@GetMapping("/cosovsattps/gencoso")
-	public String genDanhMuc(@RequestParam(value = "n") Integer n) {
+	public String genCSVSATTP(@RequestParam(value = "n") Integer n) {
 		Date dateBegin, dateEnd;
 		long ngaycap = 0;
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");

@@ -1,6 +1,5 @@
 package com.qti.csdlcn.sct.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -61,8 +60,7 @@ public class LoaiChoController {
 	// UPDATE BY ID
 	//////////////////
 	@PutMapping("/loaichos/{id}")
-	public ResponseEntity<?> updateLoaiCho(@PathVariable("id") Long id,
-			@RequestBody LoaiCho loaiCho) {
+	public ResponseEntity<?> updateLoaiChoById(@PathVariable("id") Long id, @RequestBody LoaiCho loaiCho) {
 		System.out.println("Update LoaiCho with ID = " + id + "...");
 
 		Optional<LoaiCho> loaiChoData = loaiChoRepostory.findById(id);
@@ -81,7 +79,7 @@ public class LoaiChoController {
 	// DELETE BY ID
 	/////////////////
 	@DeleteMapping("/loaichos/{id}")
-	public ResponseEntity<?> deleteLoaiCho(@PathVariable("id") Long id) {
+	public ResponseEntity<?> deleteLoaiChoById(@PathVariable("id") Long id) {
 		System.out.println("Delete LoaiCho with ID = " + id + "...");
 
 		try {
@@ -92,6 +90,20 @@ public class LoaiChoController {
 		}
 	}
 
+	////////////////
+	// GET BY ID
+	////////////////
+	@GetMapping("/loaichos/{id}")
+	public ResponseEntity<LoaiCho> getLoaiChoById(@PathVariable("id") Long id) {
+		System.out.println("Get LoaiCho by id...");
+
+		Optional<LoaiCho> loaiChoData = loaiChoRepostory.findById(id);
+		if (loaiChoData.isPresent()) {
+			return new ResponseEntity<>(loaiChoData.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 
 	////////////////////////////////////////////
 	// GET DANH MUC NNKD WITH ALL PARAMETER
@@ -130,132 +142,17 @@ public class LoaiChoController {
 
 	}
 
-	////////////////
-	// GET BY ID
-	////////////////
-	@GetMapping("/loaichos/{id}")
-	public ResponseEntity<LoaiCho> getLoaiCho(@PathVariable("id") Long id) {
-		System.out.println("Get LoaiCho by id...");
-
-		Optional<LoaiCho> loaiChoData = loaiChoRepostory.findById(id);
-		if (loaiChoData.isPresent()) {
-			return new ResponseEntity<>(loaiChoData.get(), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
-
-	// gets
-	@GetMapping("/loaichos")
-	public List<LoaiCho> getAllLoaiChosss() {
-		System.out.println("Get all LoaiChos...");
-		List<LoaiCho> list = new ArrayList<>();
-		Iterable<LoaiCho> LoaiChos = loaiChoRepostory.findAll();
-		LoaiChos.forEach(list::add);
-		return list;
-	}
-/*
-	// gets danhmuc NNKD
-	@GetMapping("/loaichos/Search/{TenLoai}")
-	public List<LoaiCho> getLoaiChoTheoTenDaiLy(@PathVariable("TenLoai") String TenLoai) {
-		try {
-			List<LoaiCho> daily = loaiChoRepostory.findByTenLoai(TenLoai);
-
-			if (daily.size() > 0) {
-				return daily;
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	// pagesize gets
-	@GetMapping("/loaichos/{pageNumber}/{pageSize}")
-	public Page<LoaiCho> getAllLoaiChos(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize) {
-		try {
-
-			System.out.println("Get all paging LoaiChos...");
-			Pageable pageable = new PageRequest(pageNumber, pageSize);
-			Page<LoaiCho> pagLoaiCho = pagRepostory.findAll(pageable);
-			return pagLoaiCho;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// sort properties (0 giam dan) pagesize gets
-	@GetMapping("/loaichos/{pageNumber}/{pageSize}/{properties_sort}/{kieu}")
-	public Page<LoaiCho> getSAllLoaiChos(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu) {
-		try {
-
-			System.out.println("Get all paging LoaiChos...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-
-			Page<LoaiCho> pagLoaiCho = pagRepostory.findAll(pageable);
-
-			return pagLoaiCho;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-
-	// search sort pagesize gets
-	@GetMapping("/loaichos/{pageNumber}/{pageSize}/{properties_sort}/{kieu}/{TenLoai}")
-	public Page<LoaiCho> getSearchAllLoaiChos(@PathVariable("pageNumber") Integer pageNumber,
-			@PathVariable("pageSize") Integer pageSize, @PathVariable("properties_sort") String properties_sort,
-			@PathVariable("kieu") Integer kieu, @PathVariable("TenLoai") String TenLoai) {
-		try {
-
-			System.out.println("Get all paging LoaiChos...");
-			Pageable pageable;
-			if (kieu == 0)
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).descending());
-			else
-				pageable = new PageRequest(pageNumber, pageSize, Sort.by(properties_sort).ascending());
-			Page<LoaiCho> pagLoaiCho;
-			if (!(TenLoai.equals("null"))) {
-				pagLoaiCho = loaiChoRepostory.findByTenLoai(TenLoai, pageable);
-			} else {
-				// pagLoaiCho = loaiChoRepostory.findByTenDaiLy(pageable);
-				pagLoaiCho = pagRepostory.findAll(pageable);
-			}
-			return pagLoaiCho;
-
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
-	
-*/
-	
 	/* =============GEN HANG CHo EXAMPLE============== */
-	
-	 @GetMapping("/loaichos/genloaicho") 
-	 public String genDanhMuc() 
-	 {
-		 System.out.println("Gen Danh Muc LoaiCho"); 
-		 for (Integer i = 1; i <10; i++) { 
-			 LoaiCho nnkd = new LoaiCho();
-			 System.out.println("LoaiCho with ID = " + i);
-			 nnkd.setTenLoai("Chợ Loại " + String.valueOf(i));
-			 loaiChoRepostory.save(nnkd); 
-			 } 
-		 return "OK"; 
-	 }
-	 
-	
+	@GetMapping("/loaichos/genloaicho")
+	public String genLoaiCho() {
+		System.out.println("Gen Danh Muc LoaiCho");
+		for (Integer i = 1; i < 10; i++) {
+			LoaiCho nnkd = new LoaiCho();
+			System.out.println("LoaiCho with ID = " + i);
+			nnkd.setTenLoai("Chợ Loại " + String.valueOf(i));
+			loaiChoRepostory.save(nnkd);
+		}
+		return "OK";
+	}
+
 }

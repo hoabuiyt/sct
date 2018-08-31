@@ -13,6 +13,8 @@ public interface CoSoVSATTPRepository extends CrudRepository<CoSoVSATTP, Long> {
 	
 	public List<CoSoVSATTP> findByTenCoSo(String tencoso);
 	
+	public List<CoSoVSATTP> findByTenCoSoContainingIgnoreCaseOrTenChuCoSoContainingIgnoreCase(String tencoso, String tenchucoso);
+	
 	public Page<CoSoVSATTP> findByTenCoSo(Pageable pageable);
 	
 	public Page<CoSoVSATTP> findByTenCoSo(String tencoso, Pageable pageable);	
