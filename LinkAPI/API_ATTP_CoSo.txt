@@ -1,0 +1,62 @@
+==============
+CO SO VS ATTP
+==============
+POST
+http://localhost:5000/api/cosovsattps/create
+
+{
+	"tenCoSo": "Cơ sở 1 ",
+	"tenChuCoSo": "Nguyễn văn B",
+	"diaChiCoSo" :"123 Hung Vương",
+	"maXa":"test add ten 8",
+	"maHuyen":"test add ten 8",
+	"maTinh":"test add ten 8",
+	"idDanhMuc" : 5 ,
+	"soGiayCN":"test add ten 8",
+	"ngayCapCN": 1531411200000,
+	"ghiChu": "ghi chú"
+}
+
+
+GET
+http://localhost:5000/api/cosovsattps/{id}
+
+PUT
+http://localhost:5000/api/cosovsattps/{id}
+{
+	"tenCoSo": "Cơ sở 1 ",
+	"tenChuCoSo": "Nguyễn văn B",
+	"diaChiCoSo" :"123 Hung Vương",
+	"maXa":"test add ten 8",
+	"maHuyen":"test add ten 8",
+	"maTinh":"test add ten 8",
+	"idDanhMuc" : 5 ,
+	"soGiayCN":"test add ten 8",
+	"ngayCapCN": 1531411200000,
+	"ghiChu": "ghi chú"
+}
+
+DELETE
+http://localhost:5000/api/cosovsattps/{id}
+
+GET (New)
+http://localhost:5000/api/cosovsattps/?keyword=&page=&pagesize=&properties_sort=&type_sort=
+note: keyword tìm kiếm thông tin từ 2 trường: tenCoSo và tenChuCoSo
+
+-------------------------------------------------
+GET
+http://localhost:5000/api/DanhMucNNKDs
+
+GET
+http://localhost:5000/api/DanhMucNNKDs/Search/{tenDanhMuc}
+
+GET
+http://localhost:5000/api/DanhMucNNKDs/{pageNumber}/{pageSize}
+
+GET
+http://localhost:5000/api/DanhMucNNKDs/{pageNumber}/{pageSize}/{properties_sort}/{kieu}
+
+GET
+http://localhost:5000/api/DanhMucNNKDs/{pageNumber}/{pageSize}/{properties_sort}/{kieu}/{tendanhmuc}
+---------------------------------------------
+

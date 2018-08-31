@@ -1,0 +1,21 @@
+POST
+http://192.168.0.155:5000/api/auth/signup
+{
+	"name":"Bùi Viết Hòa",
+	"username":"buihoa",
+	"email":"hoabuiyt@gmail.com",
+	"password":"abcd1234",
+}
+
+POST
+http://192.168.0.155:5000/api/auth/signin
+{
+	"usernameOrEmail": "buihoa",
+	"password": "abcd1234"
+}
+
+Hoặc: 
+{
+	"usernameOrEmail": "hoabuiyt@gmail.com",
+	"password": "abcd1234"
+}

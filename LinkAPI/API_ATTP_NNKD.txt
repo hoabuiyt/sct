@@ -1,0 +1,44 @@
+==============
+DANH MUC NNKD
+==============
+POST
+http://localhost:5000/api/danhmucnnkds/create
+
+{
+	"tenDanhMuc" : "ten danh muc"
+}
+
+GET
+http://localhost:5000/api/danhmucnnkds/{id}
+
+PUT
+http://localhost:5000/api/danhmucnnkds/{id}
+{
+	"tenDanhMuc" : "ten danh muc new"
+}
+
+DELETE
+http://localhost:5000/api/danhmucnnkds/{id}
+
+GET (New)
+http://localhost:5000/api/danhmucnnkds/?keyword=&page=&pagesize=&properties_sort=&type_sort=
+
+
+
+-------------------------------------------------
+GET
+http://localhost:5000/api/DanhMucNNKDs
+
+GET
+http://localhost:5000/api/danhmucnnkds/Search/{tenDanhMuc}
+
+GET
+http://localhost:5000/api/danhmucnnkds/{pageNumber}/{pageSize}
+
+GET
+http://localhost:5000/api/danhmucnnkds/{pageNumber}/{pageSize}/{properties_sort}/{kieu}
+
+GET
+http://localhost:5000/api/danhmucnnkds/{pageNumber}/{pageSize}/{properties_sort}/{kieu}/{tendanhmuc}
+---------------------------------------------
+
