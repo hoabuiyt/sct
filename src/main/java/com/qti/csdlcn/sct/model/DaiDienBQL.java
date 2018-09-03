@@ -20,10 +20,13 @@ public class DaiDienBQL implements Serializable {
 	
 	@Column(name = "idcho")
 	private Long idCho;	
+	
 	@Column(nullable = false, name ="hoten")
 	private String hoTen;
+	
 	@Column(nullable = false, name ="chucvu")
 	private String chucVu;
+	
 	@Column(nullable = false, name ="dienthoai")
 	private String dienThoai;
 	

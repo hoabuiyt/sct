@@ -44,14 +44,14 @@ public class HangChoController {
 	// CREATE HANG CHO
 	////////////////////////////
 	@PostMapping("/hangchos/create")
-	public ResponseEntity<?> createHangCho(@Valid @RequestBody HangCho HangCho) {
-		System.out.println("Create HangCho: " + HangCho.getTenHang() + "...");
+	public ResponseEntity<?> createHangCho(@Valid @RequestBody HangCho hangCho) {
+		System.out.println("Create HangCho: " + hangCho.getTenHang() + "...");
 
-		List<HangCho> dm = hangChoRepostory.findByTenHang(HangCho.getTenHang());
+		List<HangCho> dm = hangChoRepostory.findByTenHang(hangCho.getTenHang());
 		if (dm.size() > 0) {
 			return new ResponseEntity<>(AppConstants.CREATE_NAME_EXIST, HttpStatus.BAD_REQUEST);
 		} else {
-			hangChoRepostory.save(HangCho);
+			hangChoRepostory.save(hangCho);
 			return new ResponseEntity<>(AppConstants.CREATE_SUCCESS, HttpStatus.OK);
 		}
 	}
@@ -94,22 +94,23 @@ public class HangChoController {
 	// GET BY ID
 	////////////////
 	@GetMapping("/hangchos/{id}")
-	public ResponseEntity<HangCho> getHangChoById(@PathVariable("id") Long id) {
+	public ResponseEntity<?> getHangChoById(@PathVariable("id") Long id) {
 		System.out.println("Get HangCho by id...");
 
 		Optional<HangCho> hangChoData = hangChoRepostory.findById(id);
 		if (hangChoData.isPresent()) {
 			return new ResponseEntity<>(hangChoData.get(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(AppConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
 		}
 	}
 
 	////////////////////////////////////////////
 	// GET DANH MUC NNKD WITH ALL PARAMETER
 	////////////////////////////////////////////
+	@SuppressWarnings("deprecation")
 	@GetMapping("/hangchos/")
-	public Page<HangCho> getBuiHoaHangChos(@RequestParam(value = "keyword") String TenHang,
+	public Page<HangCho> getBuiHoaHangChos(@RequestParam(value = "keyword") String tenHang,
 			@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(value = "pagesize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
 			@RequestParam(value = "properties_sort") String properties_sort,
@@ -120,16 +121,21 @@ public class HangChoController {
 			// kiểm tra properties_sort ==> mặc định trả về id
 			properties_sort = (properties_sort.isEmpty() || properties_sort.toString() == "") ? "id" : properties_sort;
 
-			// Phan trang PAGEABLE va SORT
-			@SuppressWarnings("deprecation")
-			Pageable pageable = (kieu.equals("0"))
-					? new PageRequest(page - 1, pageSize, Sort.by(properties_sort).descending())
-					: new PageRequest(page - 1, pageSize, Sort.by(properties_sort).ascending());
-
+			// Phan trang PAGEABLE va SORT			
+			Pageable pageable;
+			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending() : Sort.by(properties_sort).ascending();
+			
+			if (pageSize <= 0) { // Truong hợp đặc biệt
+				int lstSize = hangChoRepostory.findByTenHangContainingIgnoreCase(tenHang).size();
+				pageable = new PageRequest(page - 1, lstSize, sort);
+			} else {
+				pageable = new PageRequest(page - 1, pageSize, sort);
+			}
+			
 			// tim kiem noi dung
 			Page<HangCho> pagHangCho;
-			if (!(TenHang.equals("null"))) {
-				pagHangCho = hangChoRepostory.findByTenHangContainingIgnoreCase(TenHang, pageable);
+			if (tenHang != "") {
+				pagHangCho = hangChoRepostory.findByTenHangContainingIgnoreCase(tenHang, pageable);
 			} else {
 				pagHangCho = pagRepostory.findAll(pageable);
 			}
@@ -142,17 +148,6 @@ public class HangChoController {
 
 	}
 
-	/* =============GEN HANG CHo EXAMPLE============== */
-	@GetMapping("/hangchos/genhangcho")
-	public String genHangCho() {
-		System.out.println("Gen Danh Muc HangCho");
-		for (Integer i = 1; i < 10; i++) {
-			HangCho nnkd = new HangCho();
-			System.out.println("HangCho with ID = " + i);
-			nnkd.setTenHang("Chợ Hạng " + String.valueOf(i));
-			hangChoRepostory.save(nnkd);
-		}
-		return "OK";
-	}
+	
 
 }

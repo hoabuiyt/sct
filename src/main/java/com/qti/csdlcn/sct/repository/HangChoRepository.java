@@ -13,6 +13,8 @@ public interface HangChoRepository extends CrudRepository<HangCho, Long> {
 	
 	public List<HangCho> findByTenHang(String tenhang);
 	
+	public List<HangCho> findByTenHangContainingIgnoreCase(String tenhang);
+	
 	public Page<HangCho> findByTenHang(Pageable pageable);
 	
 	public Page<HangCho> findByTenHang(String tenhang, Pageable pageable);

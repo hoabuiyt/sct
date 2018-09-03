@@ -23,35 +23,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.qti.csdlcn.sct.model.LoaiCho;
-import com.qti.csdlcn.sct.repository.LoaiChoRepository;
-import com.qti.csdlcn.sct.repository.PageLoaiChoRepository;
+import com.qti.csdlcn.sct.model.TinhTrangCho;
+import com.qti.csdlcn.sct.repository.TinhTrangChoRepository;
+import com.qti.csdlcn.sct.repository.PageTinhTrangChoRepository;
 import com.qti.csdlcn.sct.util.AppConstants;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
 @Secured("IS_AUTHENTICATED_ANONYMOUSLY")
-public class LoaiChoController {
+public class TinhTrangChoController {
 
 	@Autowired
-	private LoaiChoRepository loaiChoRepostory;
+	private TinhTrangChoRepository tinhTrangChoRepostory;
 
 	@Autowired
-	private PageLoaiChoRepository pagRepostory;
+	private PageTinhTrangChoRepository pagRepostory;
 
 	////////////////////////////
-	// CREATE LOAI CHO
+	// CREATE TINH TRANG CHO
 	////////////////////////////
-	@PostMapping("/loaichos/create")
-	public ResponseEntity<?> createLoaiCho(@Valid @RequestBody LoaiCho loaiCho) {
-		System.out.println("Create LoaiCho: " + loaiCho.getTenLoai() + "...");
+	@PostMapping("/tinhtrangchos/create")
+	public ResponseEntity<?> createTinhTrangCho(@Valid @RequestBody TinhTrangCho tinhTrangCho) {
+		System.out.println("Create TinhTrangCho: " + tinhTrangCho.getTenTinhTrang() + "...");
 
-		List<LoaiCho> dm = loaiChoRepostory.findByTenLoai(loaiCho.getTenLoai());
+		List<TinhTrangCho> dm = tinhTrangChoRepostory.findByTenTinhTrang(tinhTrangCho.getTenTinhTrang());
 		if (dm.size() > 0) {
 			return new ResponseEntity<>(AppConstants.CREATE_NAME_EXIST, HttpStatus.BAD_REQUEST);
 		} else {
-			loaiChoRepostory.save(loaiCho);
+			tinhTrangChoRepostory.save(tinhTrangCho);
 			return new ResponseEntity<>(AppConstants.CREATE_SUCCESS, HttpStatus.OK);
 		}
 	}
@@ -59,16 +59,16 @@ public class LoaiChoController {
 	//////////////////
 	// UPDATE BY ID
 	//////////////////
-	@PutMapping("/loaichos/{id}")
-	public ResponseEntity<?> updateLoaiChoById(@PathVariable("id") Long id, @RequestBody LoaiCho loaiCho) {
-		System.out.println("Update LoaiCho with ID = " + id + "...");
+	@PutMapping("/tinhtrangchos/{id}")
+	public ResponseEntity<?> updateTinhTrangChoById(@PathVariable("id") Long id, @RequestBody TinhTrangCho tinhTrangCho) {
+		System.out.println("Update TinhTrangCho with ID = " + id + "...");
 
-		Optional<LoaiCho> loaiChoData = loaiChoRepostory.findById(id);
-		if (loaiChoData.isPresent()) {
-			LoaiCho savedLoaiCho = loaiChoData.get();
-			savedLoaiCho.setTenLoai(loaiCho.getTenLoai());
+		Optional<TinhTrangCho> tinhTrangChoData = tinhTrangChoRepostory.findById(id);
+		if (tinhTrangChoData.isPresent()) {
+			TinhTrangCho savedTinhTrangCho = tinhTrangChoData.get();
+			savedTinhTrangCho.setTenTinhTrang(tinhTrangCho.getTenTinhTrang());
 
-			loaiChoRepostory.save(savedLoaiCho);
+			tinhTrangChoRepostory.save(savedTinhTrangCho);
 			return new ResponseEntity<>(AppConstants.UPDATE_SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(AppConstants.UPDATE_FAILED, HttpStatus.EXPECTATION_FAILED);
@@ -78,12 +78,12 @@ public class LoaiChoController {
 	/////////////////
 	// DELETE BY ID
 	/////////////////
-	@DeleteMapping("/loaichos/{id}")
-	public ResponseEntity<?> deleteLoaiChoById(@PathVariable("id") Long id) {
-		System.out.println("Delete LoaiCho with ID = " + id + "...");
+	@DeleteMapping("/tinhtrangchos/{id}")
+	public ResponseEntity<?> deleteTinhTrangChoById(@PathVariable("id") Long id) {
+		System.out.println("Delete TinhTrangCho with ID = " + id + "...");
 
 		try {
-			loaiChoRepostory.deleteById(id);
+			tinhTrangChoRepostory.deleteById(id);
 			return new ResponseEntity<>(AppConstants.DELETE_SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(AppConstants.DELETE_FAILED, HttpStatus.EXPECTATION_FAILED);
@@ -93,30 +93,30 @@ public class LoaiChoController {
 	////////////////
 	// GET BY ID
 	////////////////
-	@GetMapping("/loaichos/{id}")
-	public ResponseEntity<?> getLoaiChoById(@PathVariable("id") Long id) {
-		System.out.println("Get LoaiCho by id...");
+	@GetMapping("/tinhtrangchos/{id}")
+	public ResponseEntity<?> getTinhTrangChoById(@PathVariable("id") Long id) {
+		System.out.println("Get TinhTrangCho by id...");
 
-		Optional<LoaiCho> loaiChoData = loaiChoRepostory.findById(id);
-		if (loaiChoData.isPresent()) {
-			return new ResponseEntity<>(loaiChoData.get(), HttpStatus.OK);
+		Optional<TinhTrangCho> TinhTrangChoData = tinhTrangChoRepostory.findById(id);
+		if (TinhTrangChoData.isPresent()) {
+			return new ResponseEntity<>(TinhTrangChoData.get(), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(AppConstants.NOT_FOUND ,HttpStatus.NOT_FOUND);
 		}
 	}
 
 	////////////////////////////////////////////
-	// GET DANH MUC NNKD WITH ALL PARAMETER
+	// GET TINH TRANG CHO WITH ALL PARAMETER
 	////////////////////////////////////////////
 	@SuppressWarnings("deprecation")
-	@GetMapping("/loaichos/")
-	public Page<LoaiCho> getBuiHoaLoaiChos(@RequestParam(value = "keyword") String tenLoai,
+	@GetMapping("/tinhtrangchos/")
+	public Page<TinhTrangCho> getBuiHoaTinhTrangChos(@RequestParam(value = "keyword") String tenTinhTrang,
 			@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(value = "pagesize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
 			@RequestParam(value = "properties_sort") String properties_sort,
 			@RequestParam(value = "type_sort") String kieu) {
 		try {
-			System.out.println("Get paging LoaiChos Bui Hoa...");
+			System.out.println("Get paging TinhTrangChos Bui Hoa...");
 
 			// kiểm tra properties_sort ==> mặc định trả về id
 			properties_sort = (properties_sort.isEmpty() || properties_sort.toString() == "") ? "id" : properties_sort;
@@ -126,20 +126,20 @@ public class LoaiChoController {
 			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending() : Sort.by(properties_sort).ascending();
 			
 			if (pageSize <= 0) { // Truong hợp đặc biệt
-				int lstSize = loaiChoRepostory.findByTenLoaiContainingIgnoreCase(tenLoai).size();
+				int lstSize = tinhTrangChoRepostory.findByTenTinhTrangContainingIgnoreCase(tenTinhTrang).size();
 				pageable = new PageRequest(page - 1, lstSize, sort);
 			} else {
 				pageable = new PageRequest(page - 1, pageSize, sort);
 			}
 
 			// tim kiem noi dung
-			Page<LoaiCho> pagLoaiCho;
-			if (tenLoai != "") {
-				pagLoaiCho = loaiChoRepostory.findByTenLoaiContainingIgnoreCase(tenLoai, pageable);
+			Page<TinhTrangCho> pagTinhTrangCho;
+			if (tenTinhTrang != "") {
+				pagTinhTrangCho = tinhTrangChoRepostory.findByTenTinhTrangContainingIgnoreCase(tenTinhTrang, pageable);
 			} else {
-				pagLoaiCho = pagRepostory.findAll(pageable);
+				pagTinhTrangCho = pagRepostory.findAll(pageable);
 			}
-			return pagLoaiCho;	
+			return pagTinhTrangCho;	
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e.toString());
 			return null;

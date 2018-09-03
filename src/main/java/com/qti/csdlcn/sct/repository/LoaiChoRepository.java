@@ -13,6 +13,8 @@ public interface LoaiChoRepository extends CrudRepository<LoaiCho, Long> {
 	
 	public List<LoaiCho> findByTenLoai(String tenloai);
 	
+	public List<LoaiCho> findByTenLoaiContainingIgnoreCase(String tenloai);
+	
 	public Page<LoaiCho> findByTenLoai(Pageable pageable);
 	
 	public Page<LoaiCho> findByTenLoai(String tenloai, Pageable pageable);

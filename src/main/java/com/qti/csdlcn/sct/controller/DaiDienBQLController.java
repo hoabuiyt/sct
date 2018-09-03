@@ -23,35 +23,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.qti.csdlcn.sct.model.LoaiCho;
-import com.qti.csdlcn.sct.repository.LoaiChoRepository;
-import com.qti.csdlcn.sct.repository.PageLoaiChoRepository;
+
+import com.qti.csdlcn.sct.model.DaiDienBQL;
+import com.qti.csdlcn.sct.repository.DaiDienBQLRepository;
+import com.qti.csdlcn.sct.repository.PageDaiDienBQLRepository;
 import com.qti.csdlcn.sct.util.AppConstants;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
 @Secured("IS_AUTHENTICATED_ANONYMOUSLY")
-public class LoaiChoController {
+public class DaiDienBQLController {
 
 	@Autowired
-	private LoaiChoRepository loaiChoRepostory;
+	private DaiDienBQLRepository daiDienBQLRepostory;
 
 	@Autowired
-	private PageLoaiChoRepository pagRepostory;
+	private PageDaiDienBQLRepository pagRepostory;
 
 	////////////////////////////
-	// CREATE LOAI CHO
+	// CREATE DAI DIEN BQL
 	////////////////////////////
-	@PostMapping("/loaichos/create")
-	public ResponseEntity<?> createLoaiCho(@Valid @RequestBody LoaiCho loaiCho) {
-		System.out.println("Create LoaiCho: " + loaiCho.getTenLoai() + "...");
+	@PostMapping("/daidienbqls/create")
+	public ResponseEntity<?> createDaiDienBQL(@Valid @RequestBody DaiDienBQL daiDienBQL) {
+		System.out.println("Create daiDienBQL: " + daiDienBQL.getHoTen() + "...");
 
-		List<LoaiCho> dm = loaiChoRepostory.findByTenLoai(loaiCho.getTenLoai());
+		List<DaiDienBQL> dm = daiDienBQLRepostory.findByHoTen(daiDienBQL.getHoTen());
 		if (dm.size() > 0) {
 			return new ResponseEntity<>(AppConstants.CREATE_NAME_EXIST, HttpStatus.BAD_REQUEST);
 		} else {
-			loaiChoRepostory.save(loaiCho);
+			daiDienBQLRepostory.save(daiDienBQL);
 			return new ResponseEntity<>(AppConstants.CREATE_SUCCESS, HttpStatus.OK);
 		}
 	}
@@ -59,16 +60,21 @@ public class LoaiChoController {
 	//////////////////
 	// UPDATE BY ID
 	//////////////////
-	@PutMapping("/loaichos/{id}")
-	public ResponseEntity<?> updateLoaiChoById(@PathVariable("id") Long id, @RequestBody LoaiCho loaiCho) {
-		System.out.println("Update LoaiCho with ID = " + id + "...");
+	@PutMapping("/daidienbqls/{id}")
+	public ResponseEntity<?> updateDaiDienBQLById(@PathVariable("id") Long id, @RequestBody DaiDienBQL daiDienBQL) {
+		System.out.println("Update DaiDienBQL with ID = " + id + "...");
 
-		Optional<LoaiCho> loaiChoData = loaiChoRepostory.findById(id);
-		if (loaiChoData.isPresent()) {
-			LoaiCho savedLoaiCho = loaiChoData.get();
-			savedLoaiCho.setTenLoai(loaiCho.getTenLoai());
+		Optional<DaiDienBQL> daiDienBQLData = daiDienBQLRepostory.findById(id);
+		if (daiDienBQLData.isPresent()) {
+			DaiDienBQL savedDaiDienBQL = daiDienBQLData.get();
 
-			loaiChoRepostory.save(savedLoaiCho);
+			savedDaiDienBQL.setIdCho(daiDienBQL.getIdCho());
+			savedDaiDienBQL.setHoTen(daiDienBQL.getHoTen());
+			
+			savedDaiDienBQL.setChucVu(daiDienBQL.getChucVu());
+			savedDaiDienBQL.setDienThoai(daiDienBQL.getDienThoai());
+
+			daiDienBQLRepostory.save(savedDaiDienBQL);
 			return new ResponseEntity<>(AppConstants.UPDATE_SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(AppConstants.UPDATE_FAILED, HttpStatus.EXPECTATION_FAILED);
@@ -78,12 +84,12 @@ public class LoaiChoController {
 	/////////////////
 	// DELETE BY ID
 	/////////////////
-	@DeleteMapping("/loaichos/{id}")
-	public ResponseEntity<?> deleteLoaiChoById(@PathVariable("id") Long id) {
-		System.out.println("Delete LoaiCho with ID = " + id + "...");
+	@DeleteMapping("/daidienbqls/{id}")
+	public ResponseEntity<?> deleteDaiDienBQLById(@PathVariable("id") Long id) {
+		System.out.println("Delete DaiDienBQL with ID = " + id + "...");
 
 		try {
-			loaiChoRepostory.deleteById(id);
+			daiDienBQLRepostory.deleteById(id);
 			return new ResponseEntity<>(AppConstants.DELETE_SUCCESS, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(AppConstants.DELETE_FAILED, HttpStatus.EXPECTATION_FAILED);
@@ -93,15 +99,15 @@ public class LoaiChoController {
 	////////////////
 	// GET BY ID
 	////////////////
-	@GetMapping("/loaichos/{id}")
-	public ResponseEntity<?> getLoaiChoById(@PathVariable("id") Long id) {
-		System.out.println("Get LoaiCho by id...");
+	@GetMapping("/daidienbqls/{id}")
+	public ResponseEntity<?> getDaiDienBQLById(@PathVariable("id") Long id) {
+		System.out.println("Get DaiDienBQL by id...");
 
-		Optional<LoaiCho> loaiChoData = loaiChoRepostory.findById(id);
-		if (loaiChoData.isPresent()) {
-			return new ResponseEntity<>(loaiChoData.get(), HttpStatus.OK);
+		Optional<DaiDienBQL> daiDienBQLData = daiDienBQLRepostory.findById(id);
+		if (daiDienBQLData.isPresent()) {
+			return new ResponseEntity<>(daiDienBQLData.get(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(AppConstants.NOT_FOUND ,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(AppConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -109,14 +115,14 @@ public class LoaiChoController {
 	// GET DANH MUC NNKD WITH ALL PARAMETER
 	////////////////////////////////////////////
 	@SuppressWarnings("deprecation")
-	@GetMapping("/loaichos/")
-	public Page<LoaiCho> getBuiHoaLoaiChos(@RequestParam(value = "keyword") String tenLoai,
+	@GetMapping("/daidienbqls/")
+	public Page<DaiDienBQL> getBuiHoaDaiDienBQLs(@RequestParam(value = "keyword") String keyWord,
 			@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
 			@RequestParam(value = "pagesize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
 			@RequestParam(value = "properties_sort") String properties_sort,
 			@RequestParam(value = "type_sort") String kieu) {
 		try {
-			System.out.println("Get paging LoaiChos Bui Hoa...");
+			System.out.println("Get paging daiDienBQLs Bui Hoa...");
 
 			// kiểm tra properties_sort ==> mặc định trả về id
 			properties_sort = (properties_sort.isEmpty() || properties_sort.toString() == "") ? "id" : properties_sort;
@@ -124,22 +130,25 @@ public class LoaiChoController {
 			// Phan trang PAGEABLE va SORT
 			Pageable pageable;
 			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending() : Sort.by(properties_sort).ascending();
-			
+
 			if (pageSize <= 0) { // Truong hợp đặc biệt
-				int lstSize = loaiChoRepostory.findByTenLoaiContainingIgnoreCase(tenLoai).size();
+				int lstSize = daiDienBQLRepostory.findByHoTenContainingIgnoreCaseOrChucVuContainingIgnoreCaseOrDienThoaiContainingIgnoreCase(
+						keyWord.toString(), keyWord.toString(), keyWord.toString()).size();
 				pageable = new PageRequest(page - 1, lstSize, sort);
 			} else {
 				pageable = new PageRequest(page - 1, pageSize, sort);
 			}
 
 			// tim kiem noi dung
-			Page<LoaiCho> pagLoaiCho;
-			if (tenLoai != "") {
-				pagLoaiCho = loaiChoRepostory.findByTenLoaiContainingIgnoreCase(tenLoai, pageable);
+			Page<DaiDienBQL> pagDaiDienBQL;
+			if (keyWord != "") {
+				pagDaiDienBQL = daiDienBQLRepostory.findByHoTenContainingIgnoreCaseOrChucVuContainingIgnoreCaseOrDienThoaiContainingIgnoreCase(
+						keyWord.toString(), keyWord.toString(), keyWord.toString(), pageable);
 			} else {
-				pagLoaiCho = pagRepostory.findAll(pageable);
+				pagDaiDienBQL = pagRepostory.findAll(pageable);
 			}
-			return pagLoaiCho;	
+			return pagDaiDienBQL;
+
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e.toString());
 			return null;

@@ -48,14 +48,14 @@ public class CoSoVSATTPController {
 	// CREATE CO SO VS ATTP
 	////////////////////////////
 	@PostMapping("/cosovsattps/create")
-	public ResponseEntity<?> createCoSoVSATTP(@Valid @RequestBody CoSoVSATTP CoSoVSATTP) {
-		System.out.println("Create CoSoVSATTP: " + CoSoVSATTP.getTenCoSo() + "...");
+	public ResponseEntity<?> createCoSoVSATTP(@Valid @RequestBody CoSoVSATTP coSoVSATTP) {
+		System.out.println("Create CoSoVSATTP: " + coSoVSATTP.getTenCoSo() + "...");
 
-		List<CoSoVSATTP> dm = csvsattpRepostory.findByTenCoSo(CoSoVSATTP.getTenCoSo());
+		List<CoSoVSATTP> dm = csvsattpRepostory.findByTenCoSo(coSoVSATTP.getTenCoSo());
 		if (dm.size() > 0) {
 			return new ResponseEntity<>(AppConstants.CREATE_NAME_EXIST, HttpStatus.BAD_REQUEST);
 		} else {
-			csvsattpRepostory.save(CoSoVSATTP);
+			csvsattpRepostory.save(coSoVSATTP);
 			return new ResponseEntity<>(AppConstants.CREATE_SUCCESS, HttpStatus.OK);
 		}
 	}
@@ -107,14 +107,14 @@ public class CoSoVSATTPController {
 	// GET BY ID
 	////////////////
 	@GetMapping("/cosovsattps/{id}")
-	public ResponseEntity<CoSoVSATTP> getCoSoVSATTPById(@PathVariable("id") Long id) {
+	public ResponseEntity<?> getCoSoVSATTPById(@PathVariable("id") Long id) {
 		System.out.println("Get CoSoVSATTP by id...");
 
-		Optional<CoSoVSATTP> CoSoVSATTPData = csvsattpRepostory.findById(id);
-		if (CoSoVSATTPData.isPresent()) {
-			return new ResponseEntity<>(CoSoVSATTPData.get(), HttpStatus.OK);
+		Optional<CoSoVSATTP> coSoVSATTPData = csvsattpRepostory.findById(id);
+		if (coSoVSATTPData.isPresent()) {
+			return new ResponseEntity<>(coSoVSATTPData.get(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(AppConstants.NOT_FOUND, HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -136,8 +136,7 @@ public class CoSoVSATTPController {
 
 			// Phan trang PAGEABLE va SORT
 			Pageable pageable;
-			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending()
-					: Sort.by(properties_sort).ascending();
+			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending() : Sort.by(properties_sort).ascending();
 
 			if (pageSize <= 0) { // Truong hợp đặc biệt
 				int lstSize = csvsattpRepostory.findByTenCoSoContainingIgnoreCaseOrTenChuCoSoContainingIgnoreCase(

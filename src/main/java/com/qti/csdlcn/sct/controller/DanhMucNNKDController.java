@@ -94,14 +94,14 @@ public class DanhMucNNKDController {
 	// GET BY ID
 	////////////////
 	@GetMapping("/danhmucnnkds/{id}")
-	public ResponseEntity<DanhMucNNKD> getDanhMucNNKDById(@PathVariable("id") Long id) {
+	public ResponseEntity<?> getDanhMucNNKDById(@PathVariable("id") Long id) {
 		System.out.println("Get DanhMucNNKD by id...");
 
 		Optional<DanhMucNNKD> DanhMucNNKDData = dmnnkdRepostory.findById(id);
 		if (DanhMucNNKDData.isPresent()) {
 			return new ResponseEntity<>(DanhMucNNKDData.get(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(AppConstants.NOT_FOUND,HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -119,19 +119,10 @@ public class DanhMucNNKDController {
 			System.out.println("### Get paging DanhMucNNKDs Bui Hoa...");
 
 			properties_sort = (properties_sort.isEmpty() || properties_sort.toString() == "") ? "id" : properties_sort; // kiểm
-																														// tra
-																														// properties_sort
-																														// ==>
-																														// mặc
-																														// định
-																														// trả
-																														// về
-																														// id
 
 			// Phan trang PAGEABLE va SORT
 			Pageable pageable;
-			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending()
-					: Sort.by(properties_sort).ascending();
+			Sort sort = (kieu.equals("0")) ? Sort.by(properties_sort).descending() : Sort.by(properties_sort).ascending();
 
 			if (pageSize <= 0) { // Truong hợp đặc biệt
 				int lstSize = dmnnkdRepostory.findByTenDanhMucContainingIgnoreCase(tendanhmuc).size();

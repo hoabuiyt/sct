@@ -8,13 +8,15 @@ public interface AppConstants {
 
     int MAX_PAGE_SIZE = 50;
 
-    ApiResponse CREATE_NAME_EXIST = new ApiResponse(false, "CREATE_NAME_EXIST");
     ApiResponse CREATE_SUCCESS = new ApiResponse(true, "CREATE_SUCCESS");
+    ApiResponse CREATE_NAME_EXIST = new ApiResponse(false, "CREATE_NAME_EXIST");    
     
     ApiResponse UPDATE_SUCCESS = new ApiResponse(true, "UPDATE_SUCCESS");
     ApiResponse UPDATE_FAILED = new ApiResponse(false, "UPDATE_FAILED");
     
     ApiResponse DELETE_SUCCESS = new ApiResponse(true, "DELETE_SUCCESS");
     ApiResponse DELETE_FAILED = new ApiResponse(false, "DELETE_FAILED");
+    
+    ApiResponse NOT_FOUND = new ApiResponse(false, "NOT_FOUND");
     
 }
