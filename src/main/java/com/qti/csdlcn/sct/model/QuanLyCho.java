@@ -43,7 +43,7 @@ public class QuanLyCho implements Serializable {
 	private String maTinh;
 	
 	@Column(name = "vontrunguong")
-	private String maTrungUong;
+	private String vonTrungUong;
 	
 	@Column(name = "vondiaphuong")
 	private String vonDiaPhuong;
@@ -183,12 +183,12 @@ public class QuanLyCho implements Serializable {
 		this.maTinh = maTinh;
 	}
 
-	public String getMaTrungUong() {
-		return maTrungUong;
+	public String getVonTrungUong() {
+		return vonTrungUong;
 	}
 
-	public void setMaTrungUong(String maTrungUong) {
-		this.maTrungUong = maTrungUong;
+	public void setVonTrungUong(String vonTrungUong) {
+		this.vonTrungUong = vonTrungUong;
 	}
 
 	public String getVonDiaPhuong() {
