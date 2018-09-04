@@ -10,6 +10,7 @@ import com.qti.csdlcn.sct.model.DanhMucNNKD;
 
 public interface DanhMucNNKDRepository extends CrudRepository<DanhMucNNKD, Long> {
 	
+	public DanhMucNNKD findByid(long id);
 	
 	public List<DanhMucNNKD> findByTenDanhMuc(String tendanhmuc);
 	

@@ -11,14 +11,15 @@ import com.qti.csdlcn.sct.model.CoSoVSATTP;
 
 public interface CoSoVSATTPRepository extends CrudRepository<CoSoVSATTP, Long> {	
 	
+	//public CoSoVSATTP findById(long id);
+	
 	public List<CoSoVSATTP> findByTenCoSo(String tencoso);
 	
 	public List<CoSoVSATTP> findByTenCoSoContainingIgnoreCaseOrTenChuCoSoContainingIgnoreCase(String tencoso, String tenchucoso);
 	
 	public Page<CoSoVSATTP> findByTenCoSo(Pageable pageable);
 	
-	public Page<CoSoVSATTP> findByTenCoSo(String tencoso, Pageable pageable);	
-	
+	public Page<CoSoVSATTP> findByTenCoSo(String tencoso, Pageable pageable);		
 	
 	public Page<CoSoVSATTP> findByTenCoSoContainingIgnoreCaseOrTenChuCoSoContainingIgnoreCase(String tencoso,String tenchucoso, Pageable pageable);
 

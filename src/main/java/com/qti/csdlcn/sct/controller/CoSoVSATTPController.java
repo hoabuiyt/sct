@@ -1,8 +1,5 @@
 package com.qti.csdlcn.sct.controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -26,20 +23,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.javafaker.Faker;
 import com.qti.csdlcn.sct.model.CoSoVSATTP;
+import com.qti.csdlcn.sct.model.DanhMucNNKD;
 import com.qti.csdlcn.sct.repository.CoSoVSATTPRepository;
+import com.qti.csdlcn.sct.repository.DanhMucNNKDRepository;
 import com.qti.csdlcn.sct.repository.PageCoSoVSATTPRepository;
 import com.qti.csdlcn.sct.util.AppConstants;
+
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api")
 @Secured("IS_AUTHENTICATED_ANONYMOUSLY")
 public class CoSoVSATTPController {
-
 	@Autowired
 	private CoSoVSATTPRepository csvsattpRepostory;
+	
+	@Autowired
+	private DanhMucNNKDRepository dmnnkdRepostory;
 
 	@Autowired
 	private PageCoSoVSATTPRepository pagRepostory;
@@ -64,29 +65,37 @@ public class CoSoVSATTPController {
 	// UPDATE BY ID
 	//////////////////
 	@PutMapping("/cosovsattps/{id}")
-	public ResponseEntity<?> updateCoSoVSATTPById(@PathVariable("id") Long id, @RequestBody CoSoVSATTP coSoVSATTP) {
+	public ResponseEntity<?> updateCoSoVSATTPById(@PathVariable("id") Long id, @RequestBody CoSoVSATTPUpdate coSoVSATTPNewData) {
 		System.out.println("Update CoSoVSATTP with ID = " + id + "...");
 
 		Optional<CoSoVSATTP> coSoVSATTPData = csvsattpRepostory.findById(id);
+
+		
+		
 		if (coSoVSATTPData.isPresent()) {
+			DanhMucNNKD nnkdUpdate = dmnnkdRepostory.findByid(coSoVSATTPNewData.getIdDanhMuc());  //dmnnkdRepostory.findById(coSoVSATTPNewData.getIdDanhMuc());    //.findById(coSoVSATTPUpdate.getIdDanhMuc());
+			
 			CoSoVSATTP savedCoSoVSATTP = coSoVSATTPData.get();
 
-			savedCoSoVSATTP.setTenCoSo(coSoVSATTP.getTenCoSo());
-			savedCoSoVSATTP.setTenChuCoSo(coSoVSATTP.getTenChuCoSo());
-			savedCoSoVSATTP.setDiaChiCoSo(coSoVSATTP.getDiaChiCoSo());
-			savedCoSoVSATTP.setMaXa(coSoVSATTP.getMaXa());
-			savedCoSoVSATTP.setMaHuyen(coSoVSATTP.getMaHuyen());
-			savedCoSoVSATTP.setIdDanhMuc(coSoVSATTP.getIdDanhMuc());
-			savedCoSoVSATTP.setSoGiayCN(coSoVSATTP.getSoGiayCN());
-			savedCoSoVSATTP.setNgayCapCN(coSoVSATTP.getNgayCapCN());
-			savedCoSoVSATTP.setGhiChu(coSoVSATTP.getGhiChu());
+			savedCoSoVSATTP.setTenCoSo(coSoVSATTPNewData.getTenCoSo());
+			savedCoSoVSATTP.setTenChuCoSo(coSoVSATTPNewData.getTenChuCoSo());
+			savedCoSoVSATTP.setDiaChiCoSo(coSoVSATTPNewData.getDiaChiCoSo());
+			savedCoSoVSATTP.setMaXa(coSoVSATTPNewData.getMaXa());
+			savedCoSoVSATTP.setMaHuyen(coSoVSATTPNewData.getMaHuyen());
+			
+			savedCoSoVSATTP.setSoGiayCN(coSoVSATTPNewData.getSoGiayCN());
+			savedCoSoVSATTP.setNgayCapCN(coSoVSATTPNewData.getNgayCapCN());
+			savedCoSoVSATTP.setGhiChu(coSoVSATTPNewData.getGhiChu());
 
+			savedCoSoVSATTP.setDanhMucNNKD(nnkdUpdate);
+			
 			csvsattpRepostory.save(savedCoSoVSATTP);
 			return new ResponseEntity<>(AppConstants.UPDATE_SUCCESS, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(AppConstants.UPDATE_FAILED, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
+
 
 	/////////////////
 	// DELETE BY ID
@@ -162,47 +171,18 @@ public class CoSoVSATTPController {
 		}
 
 	}
+}
 
-	/* =============GEN CO SO VS ATTP EXAMPLE============== */
-	@GetMapping("/cosovsattps/gencoso")
-	public String genCSVSATTP(@RequestParam(value = "n") Integer n) {
-		Date dateBegin, dateEnd;
-		long ngaycap = 0;
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-		Faker faker = new Faker();
-		n = ((n != null) ? n : 1000);
-		for (int i = 1; i < n; i++) {
-			String hero = faker.superhero().name();
-			String name = faker.name().fullName();
-			String streetAddress = faker.address().streetAddress();
-			String ghichu = faker.lorem().sentence();
-			try {
-				dateBegin = (Date) formatter.parse("01-07-2018");
-				dateEnd = (Date) formatter.parse("30-08-2018");
-				ngaycap = faker.date().between(dateBegin, dateEnd).getTime();
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+class CoSoVSATTPUpdate extends CoSoVSATTP {
+	private static final long serialVersionUID = 1L;
+	private Long idDanhMuc;
 
-			CoSoVSATTP cs = new CoSoVSATTP();
-			cs.setTenCoSo(hero);
-			cs.setTenChuCoSo(name);
-			cs.setDiaChiCoSo(streetAddress);
-			cs.setMaXa("Mã xã " + i);
-			cs.setMaHuyen("Mã huyện " + i);
-			cs.setMaTinh("Mã tỉnh " + i);
-
-			// cs.setIdDanhMuc((long)i);
-			cs.setSoGiayCN("Số giấy CN " + i);
-			cs.setNgayCapCN(ngaycap);
-			cs.setGhiChu("Ghi chú " + ghichu);
-
-			long x = 100 + (int) (Math.random() * 500);
-			cs.setIdDanhMuc(x);
-
-			createCoSoVSATTP(cs);
-		}
-		return "OK";
+	public Long getIdDanhMuc() {
+		return idDanhMuc;
 	}
 
+	public void setIdDanhMuc(Long idDanhMuc) {
+		this.idDanhMuc = idDanhMuc;
+	}
+	
 }

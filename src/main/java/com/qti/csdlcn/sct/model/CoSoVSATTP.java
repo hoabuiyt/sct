@@ -1,7 +1,10 @@
 package com.qti.csdlcn.sct.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "attp_cosovsattp")
@@ -32,8 +35,13 @@ public class CoSoVSATTP implements Serializable {
 	@Column(name = "matinh")
 	private String maTinh;
 
-	@Column(name = "iddanhmuc")
-	private Long idDanhMuc;
+	//@Column(name = "iddanhmuc")
+	//private Long idDanhMuc;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "iddanhmuc", nullable = false)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private DanhMucNNKD danhMucNNKD;
 
 	@Column(name = "sogiaycn")
 	private String soGiayCN;
@@ -100,12 +108,19 @@ public class CoSoVSATTP implements Serializable {
 		this.maTinh = maTinh;
 	}
 
-	public Long getIdDanhMuc() {
+	/*public Long getIdDanhMuc() {
 		return idDanhMuc;
 	}
 
 	public void setIdDanhMuc(Long idDanhMuc) {
 		this.idDanhMuc = idDanhMuc;
+	}*/
+	public DanhMucNNKD getDanhMucNNKD() {
+		return danhMucNNKD;
+	}
+
+	public void setDanhMucNNKD(DanhMucNNKD danhMucNNKD) {
+		this.danhMucNNKD = danhMucNNKD;
 	}
 
 	public String getSoGiayCN() {
