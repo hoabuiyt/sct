@@ -129,7 +129,7 @@ public class CoSoVSATTPController {
 	}
 
 	////////////////////////////////////////////
-	// GET DANH MUC NNKD WITH ALL PARAMETER
+	// GET CO SO VS ATTP WITH ALL PARAMETER
 	////////////////////////////////////////////
 	@SuppressWarnings("deprecation")
 	@GetMapping("/cosovsattps/")
