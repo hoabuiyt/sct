@@ -24,16 +24,17 @@ http://localhost:5000/api/cosovsattps/{id}
 PUT
 http://localhost:5000/api/cosovsattps/{id}
 {
-	"tenCoSo": "Cơ sở 1 ",
-	"tenChuCoSo": "Nguyễn văn B",
-	"diaChiCoSo" :"123 Hung Vương",
-	"maXa":"test add ten 8",
-	"maHuyen":"test add ten 8",
-	"maTinh":"test add ten 8",
-	"idDanhMuc" : 5 ,
-	"soGiayCN":"test add ten 8",
-	"ngayCapCN": 1531411200000,
-	"ghiChu": "ghi chú"
+    "id": 3005,
+    "tenCoSo": "Azrael IX 237",
+    "tenChuCoSo": "Miss Maida Hintz",
+    "diaChiCoSo": "72442 Frances Glens",
+    "maXa": "Mã xã 1",
+    "maHuyen": "Mã huyện 1",
+    "maTinh": "Mã tỉnh 1",
+    "idDanhMuc": 237,
+    "soGiayCN": "Số giấy CN 1",
+    "ngayCapCN": 1533877149075,
+    "ghiChu": "Ghi chú Consequatur blanditiis cumque quis qui."
 }
 
 DELETE

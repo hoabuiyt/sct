@@ -69,11 +69,12 @@ public class CoSoVSATTPController {
 		System.out.println("Update CoSoVSATTP with ID = " + id + "...");
 
 		Optional<CoSoVSATTP> coSoVSATTPData = csvsattpRepostory.findById(id);
-
-		
-		
 		if (coSoVSATTPData.isPresent()) {
-			DanhMucNNKD nnkdUpdate = dmnnkdRepostory.findByid(coSoVSATTPNewData.getIdDanhMuc());  //dmnnkdRepostory.findById(coSoVSATTPNewData.getIdDanhMuc());    //.findById(coSoVSATTPUpdate.getIdDanhMuc());
+			DanhMucNNKD nnkdUpdate = dmnnkdRepostory.findByid(coSoVSATTPNewData.getIdDanhMuc());  
+			if(nnkdUpdate == null)
+			{
+				return new ResponseEntity<>(AppConstants.UPDATE_FAILED, HttpStatus.EXPECTATION_FAILED);
+			}
 			
 			CoSoVSATTP savedCoSoVSATTP = coSoVSATTPData.get();
 
